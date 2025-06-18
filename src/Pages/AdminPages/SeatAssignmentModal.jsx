@@ -14,22 +14,23 @@ import { db, auth } from "../../firebase";
 
 // Color mappings (same as in ViewStudents)
 const hallColors = {
-    'NAS 1': 'border-blue-500',
-    'NAS 2': 'border-green-500',
-    'NAS 3': 'border-yellow-500',
-    'NAS 4': 'border-purple-500',
-    'NAS 5': 'border-pink-500',
+    'NAS 1': 'border-sky-600',
+    'NAS 2': 'border-emerald-500',
+    'NAS 3': 'border-amber-700',
+    'NAS 4': 'border-violet-600',
+    'NAS 5': 'border-rose-500',
 };
 
 const departmentColors = {
-    'computer science': 'bg-red-200',
-    'ict': 'bg-green-200',
-    'mathematics': 'bg-purple-200',
-    'physics': 'bg-indigo-200',
-    'chemistry': 'bg-pink-200',
-    'biology': 'bg-teal-200',
-    'electrical engineering': 'bg-orange-200',
-    'mechanical engineering': 'bg-amber-200',
+    'computer science': 'bg-red-400',
+    'ict': 'bg-emerald-400',
+    'mathematics': 'bg-violet-400',
+    'physics': 'bg-indigo-400',
+    'chemistry': 'bg-pink-400',
+    'biology': 'bg-green-400',
+    'micro-biology': 'bg-blue-400',
+    'electrical engineering': 'bg-orange-400',
+    'mechanical engineering': 'bg-amber-400',
 };
 
 const SeatAssignmentModal = ({ registration, onClose, onSuccess }) => {
