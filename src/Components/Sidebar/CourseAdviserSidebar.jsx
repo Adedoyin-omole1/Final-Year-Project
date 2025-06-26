@@ -44,7 +44,6 @@ const CourseAdviserSidebar = () => {
             icon: <FaUserGraduate />,
             subMenu: [
                 { title: "My Students", path: "/course-adviser/students" },
-                { title: "Student Records", path: "/course-adviser/student-records" },
             ],
             key: "students",
         },
@@ -53,7 +52,6 @@ const CourseAdviserSidebar = () => {
             icon: <FaUniversity />,
             subMenu: [
                 { title: "Course Registration", path: "/course-adviser/course-registration" },
-                { title: "Course Approval", path: "/course-adviser/course-approval" },
             ],
             key: "courses",
         },
@@ -85,9 +83,9 @@ const CourseAdviserSidebar = () => {
                 {/* Logo and Title Section */}
                 <div className="flex gap-x-4 items-center">
                     <img
-                        src="../../assets/Logo.jpg"
+                        src="../../assets/Logos.jpg"
                         alt=""
-                        className={`w-10 h-10 rounded-full object-cover object-center cursor-pointer ease-in-out duration-3 ${open && "rotate-[360deg]"}`}
+                        className={`w-15 h-15 rounded-full object-cover object-center cursor-pointer ease-in-out duration-3 ${open && "rotate-[360deg]"}`}
                     />
                     <h1 className={`text-zinc-50 origin-left font-semibold text-xl duration-200 ease-in-out ${!open && "scale-0"}`}>
                         Course Adviser

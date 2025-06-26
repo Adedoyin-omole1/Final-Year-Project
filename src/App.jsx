@@ -8,7 +8,6 @@ import { auth } from './firebase';
 import Students from './Pages/StudentPages/Students';
 import AddStudent from './Pages/AdminPages/AddStudents';
 import ViewStudent from './Pages/AdminPages/ViewStudents';
-import EditStudent from './Pages/AdminPages/EditStudents';
 import SelectHall from './Pages/StudentPages/SelectHall';
 import StudentForm from './Pages/StudentPages/StudentsForm';
 import StudentTimetable from './Pages/StudentPages/StudentTimetable';
@@ -18,6 +17,9 @@ import Notifications from './Pages/Notifications/Notifications';
 import CourseAdviser from './Pages/CourseAdviserPages/CourseAdviser';
 import MyStudentsCourses from './Pages/CourseAdviserPages/MyStudents';
 import CourseRegistrationsView from './Pages/CourseAdviserPages/CourseRegistration';
+import CourseRegistration from './Pages/AdminPages/CourseRegistration';
+import ExamScheduling from './Pages/AdminPages/ExamScheduling';
+import ViewTimetable from './Pages/AdminPages/ViewTimetable';
 
 function App() {
   const [user, setUser] = useState();
@@ -43,10 +45,11 @@ function App() {
           <Route path='/student' element={<Students />} />
           <Route path='/admin/add-students' element={<AddStudent />} />
           <Route path='/admin/view-students' element={<ViewStudent />} />
-          <Route path='/admin/edit-students' element={<EditStudent />} />
+          <Route path='/admin/course-registration' element={<CourseRegistration />} />
           <Route path='/student/select-hall' element={<SelectHall />} /> {/* Fixed path */}
           <Route path='/admin/create-hall' element={<CreateExamHall />} />
-          {/* <Route path='/notifications' element={<Notifications />} /> */}
+          <Route path='/admin/exam-schedule' element={<ExamScheduling />} />
+          <Route path='/admin/view-timetable' element={<ViewTimetable />} />
           <Route path='/student/form' element={<StudentForm />} />
           <Route path='/student/exam-timetable' element={<StudentTimetable />} />
           <Route path='/student/my-allocation' element={<MyAllocation />} />

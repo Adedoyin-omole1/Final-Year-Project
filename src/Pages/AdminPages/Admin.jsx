@@ -8,10 +8,10 @@ import {
   FaBook,
   FaUserCog
 } from 'react-icons/fa';
-import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../../Components/Sidebar/sidebar';
+import Sidebar from '../../Components/Sidebar/Sidebar';
 import Navbar from '../../Components/Navbar/navbar';
 import { toast } from 'react-toastify';
 
@@ -29,42 +29,63 @@ const Admin = () => {
   useEffect(() => {
     const fetchData = async () => {
       const user = auth.currentUser;
-      if (user) {
-        try {
-          setLoading(true);
-          const userDoc = await getDoc(doc(db, "Users", user.uid));
-          if (userDoc.exists()) setUserDetails(userDoc.data());
+      if (!user) {
+        navigate('/login');
+        return;
+      }
 
-          const [studentsSnap, coursesSnap, examsSnap] = await Promise.all([
-            getDocs(collection(db, "Students")),
-            getDocs(collection(db, "Courses")),
-            getDocs(collection(db, "Exams"))
-          ]);
+      try {
+        setLoading(true);
 
-          setStats({
-            totalStudents: studentsSnap.size,
-            activeCourses: coursesSnap.size,
-            upcomingExams: examsSnap.size,
-            pendingRequests: 0
-          });
-        } catch (error) {
-          toast.error("Failed to load dashboard data");
-          console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false);
+        // Verify admin status first
+        const userDoc = await getDoc(doc(db, "Users", user.uid));
+        if (!userDoc.exists()) {
+          throw new Error("User profile not found");
         }
+
+        const userData = userDoc.data();
+        setUserDetails(userData);
+
+        if (userData.role !== "admin") {
+          toast.error("Admin access required");
+          navigate(userData.role === "courseAdviser" ? "/course-adviser" : "/student");
+          return;
+        }
+
+        // Only query collections that are defined in Firebase rules
+        const [usersSnap, courseRegsSnap, examRegsSnap, pendingApprovalsSnap] = await Promise.all([
+          getDocs(collection(db, "Users")),
+          getDocs(query(collection(db, "courseRegistrations"), where("status", "==", "active"))),
+          getDocs(collection(db, "examRegistrations")),
+          getDocs(query(collection(db, "courseApprovals"), where("status", "==", "pending")))
+        ]);
+
+        // Calculate stats from permitted collections
+        const students = usersSnap.docs.filter(doc => doc.data().role === "student");
+
+        setStats({
+          totalStudents: students.length,
+          activeCourses: courseRegsSnap.size,
+          upcomingExams: examRegsSnap.size,
+          pendingRequests: pendingApprovalsSnap.size
+        });
+
+      } catch (error) {
+        console.error("Admin dashboard error:", error);
+        toast.error(error.message || "Failed to load dashboard data");
+        if (error.code === 'permission-denied') {
+          navigate('/login');
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) fetchData();
-      else navigate('/login');
-    });
-
+    const unsubscribe = auth.onAuthStateChanged(fetchData);
     return () => unsubscribe();
   }, [navigate]);
 
-  // ===== UI Components =====
+  // UI Components (remain exactly the same as your original)
   const StatCard = ({ icon, title, value, color }) => (
     <div className={`bg-white p-6 rounded-xl shadow-sm border-l-4 border-${color}-500 hover:shadow-md transition-shadow`}>
       <div className="flex items-center space-x-4">

@@ -45,12 +45,18 @@ const Sidebar = () => {
             icon: <FaUserGraduate />,
             subMenu: [
                 { title: "Students", path: "/admin/view-students" }, // Matches the route in App.jsx
+                { title: "Course Registration", path: "/admin/course-registration" },
             ],
             key: "students",
         },
         { title: "Create Hall", path: "/admin/create-hall", icon: <MdEventSeat /> }, // Matches the route in App.jsx
         //{ title: "Seat Allocation", icon: <MdEventSeat />, subMenu: ["Allocate Seats", "View Allocations"], key: "seats" },
-        { title: "Exam Schedule", icon: <FaCalendarAlt />, subMenu: ["Set Exam Dates", "View Schedule"], key: "schedule" },
+        {
+            title: "Exam Schedule", icon: <FaCalendarAlt />, subMenu: [
+                { title: "Exam Scheduling", path: "/admin/exam-schedule" }, // Matches the route in App.jsx
+                { title: "View Timetable", path: "/admin/view-timetable" }, // Matches the route in App.jsx
+            ], key: "schedule"
+        },
         { title: "Messages", icon: <BiChat /> },
         { title: "User Management", icon: <FaUserCog />, subMenu: ["Manage Admins", "Manage Students"], key: "users" },
         { title: "Settings", icon: <FaGears />, subMenu: ["Profile", "Security", "Notifications"], key: "settings" },
@@ -71,7 +77,7 @@ const Sidebar = () => {
 
                 {/* Logo and Title Section */}
                 <div className="flex gap-x-4 items-center">
-                    <img src="../../assets/Logo.jpg" alt="" className={`w-10 h-10 rounded-full object-cover object-center cursor-pointer ease-in-out duration-3 ${open && "rotate-[360deg]"}`} />
+                    <img src="../../assets/Logos.jpg" alt="" className={`w-10 h-10 rounded-full object-cover object-center cursor-pointer ease-in-out duration-3 ${open && "rotate-[360deg]"}`} />
                     <h1 className={`text-zinc-50 origin-left font-semibold text-xl duration-200 ease-in-out ${!open && "scale-0"}`}>
                         Admin's Dashboard
                     </h1>

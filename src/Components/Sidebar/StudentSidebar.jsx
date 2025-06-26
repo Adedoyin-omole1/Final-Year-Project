@@ -113,7 +113,7 @@ const StudentSidebar = () => {
 
             {/* Logo and Title Section */}
             <div className="flex gap-x-4 items-center">
-                <img src="../assets/Logo.jpg" alt="" className={`w-10 h-10 rounded-full object-cover object-center cursor-pointer ease-in-out duration-3 ${open && "rotate-[360deg]"}`} />
+                <img src="../assets/Logos.jpg" alt="" className={`w-10 h-10 rounded-full object-cover object-center cursor-pointer ease-in-out duration-3 ${open && "rotate-[360deg]"}`} />
                 <h1 className={`text-zinc-50 origin-left font-semibold text-xl duration-200 ease-in-out ${!open && "scale-0"}`}>
                     Student Dashboard
                 </h1>

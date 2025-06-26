@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import SeatAssignmentModal from "./SeatAssignmentModal";
-import Sidebar from "../../Components/Sidebar/sidebar";
+import Sidebar from "../../Components/Sidebar/Sidebar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -30,11 +30,11 @@ const ViewStudents = () => {
 
   // Color mappings
   const hallColors = {
-    'NAS 1': 'border-sky-600',
-    'NAS 2': 'border-emerald-500',
-    'NAS 3': 'border-amber-700',
-    'NAS 4': 'border-violet-600',
-    'NAS 5': 'border-rose-500',
+    'NAS 1': 'border-sky-600',         // Cool blue
+    'NAS 2': 'border-emerald-500',     // Vibrant green
+    'NAS 3': 'border-amber-700',       // Deep yellow
+    'NAS 4': 'border-violet-600',      // Strong purple
+    'NAS 5': 'border-rose-500',        // Bold pink/red
   };
 
   const departmentColors = {

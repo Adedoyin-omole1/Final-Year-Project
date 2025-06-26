@@ -41,16 +41,16 @@ const CourseAdviser = () => {
     ];
 
     const recentStudents = [
-        { name: "Alex Johnson", id: "STU2023001", department: "Computer Science", status: "Active" },
-        { name: "Sarah Williams", id: "STU2023002", department: "ICT", status: "Pending" },
-        { name: "Michael Brown", id: "STU2023003", department: "Physics", status: "Active" },
-        { name: "Emily Davis", id: "STU2023004", department: "Biochemistry", status: "Inactive" }
+        { name: "Adedoyin Omole", id: "2023001", department: "Computer Science", status: "Active" },
+        { name: "Adedowale Precious", id: "STU2023002", department: "ICT", status: "Pending" },
+        { name: "Akintunde Praise", id: "STU2023003", department: "Physics", status: "Active" },
+        { name: "Obaloluwa Omole", id: "STU2023004", department: "Biochemistry", status: "Inactive" }
     ];
 
     const recentActivities = [
-        { action: "Approved course registration", student: "David Wilson", time: "10 mins ago", icon: <FiCheckCircle className="text-green-500" /> },
-        { action: "Rejected incomplete form", student: "Lisa Moore", time: "25 mins ago", icon: <FiAlertCircle className="text-red-500" /> },
-        { action: "Sent reminder email", student: "Group: CS 401", time: "1 hour ago", icon: <FiCheckCircle className="text-blue-500" /> },
+        { action: "Approved course registration", student: "Obaloluwa Omole", time: "10 mins ago", icon: <FiCheckCircle className="text-green-500" /> },
+        { action: "Rejected incomplete form", student: "Omole Joshua Adedoyin", time: "25 mins ago", icon: <FiAlertCircle className="text-red-500" /> },
+        { action: "Sent reminder email", student: "Adedoyin", time: "1 hour ago", icon: <FiCheckCircle className="text-blue-500" /> },
         { action: "Updated course syllabus", course: "CSC 401", time: "2 hours ago", icon: <FiCheckCircle className="text-purple-500" /> }
     ];
 
@@ -118,8 +118,8 @@ const CourseAdviser = () => {
                                                     <p className="text-sm text-gray-500">{student.id} • {student.department}</p>
                                                 </div>
                                                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${student.status === 'Active' ? 'bg-green-100 text-green-800' :
-                                                        student.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                            'bg-red-100 text-red-800'
+                                                    student.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                        'bg-red-100 text-red-800'
                                                     }`}>
                                                     {student.status}
                                                 </span>
