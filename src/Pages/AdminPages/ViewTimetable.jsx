@@ -3,7 +3,7 @@ import { collection, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/fi
 import { db } from '../../firebase';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 import TopNavbar from '../../Components/Navbar/TopNavbar';
-import { FiCalendar, FiClock, FiBook, FiUser, FiMapPin, FiTrash2, FiEdit, FiPrinter } from 'react-icons/fi';
+import { FiCalendar, FiClock, FiBook, FiUser, FiMapPin, FiTrash2, FiEdit, FiPrinter, FiUsers } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -16,21 +16,20 @@ const ViewTimetable = () => {
 
     const getDayName = (dateStr) => {
         const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { weekday: 'long' });
+        return date.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
     };
 
     const formatDate = (dateStr) => {
         const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     };
 
     const formatTime = (timeStr) => {
-        if (timeStr.includes('Morning')) return '9:00 AM - 11:00 AM';
-        if (timeStr.includes('Afternoon')) return '1:00 PM - 3:00 PM';
+        if (timeStr.includes('Morning')) return '9:00 AM - 12:00 PM';
+        if (timeStr.includes('Afternoon')) return '2:00 PM - 5:00 PM';
         return timeStr;
     };
 
@@ -111,9 +110,9 @@ const ViewTimetable = () => {
 
                 <main className="flex-1 overflow-y-auto p-6">
                     <div className="max-w-7xl mx-auto">
-                        <div className="flex justify-between items-center mb-6">
+                        <div className="flex justify-between items-center mb-8">
                             <h1 className="text-2xl font-bold text-gray-800">Examination Timetable</h1>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
                                 Last updated: {new Date().toLocaleDateString()}
                             </div>
                         </div>
@@ -123,107 +122,134 @@ const ViewTimetable = () => {
                                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                             </div>
                         ) : timetables.length === 0 ? (
-                            <div className="bg-white p-6 rounded-lg shadow text-center">
+                            <div className="bg-white p-8 rounded-xl shadow text-center">
                                 <p className="text-gray-500">No exam timetables found</p>
                             </div>
                         ) : (
-                            <div className="space-y-8">
+                            <div className="space-y-6">
                                 {timetables.map((timetable) => (
-                                    <div key={timetable.id} className="bg-white rounded-lg shadow overflow-hidden" id={`timetable-${timetable.id}`}>
+                                    <div key={timetable.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100" id={`timetable-${timetable.id}`}>
                                         <div className="px-6 py-4 bg-gray-50 border-b flex justify-between items-center">
-                                            <h2 className="text-lg font-semibold text-gray-700">
+                                            <h2 className="text-lg font-semibold text-gray-700 flex items-center">
                                                 {timetable.status === 'Draft' && (
-                                                    <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full mr-2">
+                                                    <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full mr-3 font-medium">
                                                         DRAFT
                                                     </span>
                                                 )}
-                                                Examination Schedule
+                                                <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                                                    Examination Schedule
+                                                </span>
                                             </h2>
-                                            <div className="flex items-center space-x-3">
-                                                <div className="text-sm text-gray-500">
+                                            <div className="flex items-center space-x-4">
+                                                <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
                                                     {timetable.exams.length} exams scheduled
                                                 </div>
-                                                <button
-                                                    onClick={() => handlePrint(timetable.id)}
-                                                    className="text-gray-500 hover:text-blue-600 transition-colors"
-                                                    title="Print"
-                                                >
-                                                    <FiPrinter className="h-5 w-5" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleEdit(timetable.id)}
-                                                    className="text-gray-500 hover:text-green-600 transition-colors"
-                                                    title="Edit"
-                                                >
-                                                    <FiEdit className="h-5 w-5" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(timetable.id)}
-                                                    className="text-gray-500 hover:text-red-600 transition-colors"
-                                                    title="Delete"
-                                                >
-                                                    <FiTrash2 className="h-5 w-5" />
-                                                </button>
+                                                <div className="flex items-center space-x-2">
+                                                    <button
+                                                        onClick={() => handlePrint(timetable.id)}
+                                                        className="text-gray-500 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50"
+                                                        title="Print"
+                                                    >
+                                                        <FiPrinter className="h-5 w-5" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleEdit(timetable.id)}
+                                                        className="text-gray-500 hover:text-green-600 transition-colors p-2 rounded-full hover:bg-green-50"
+                                                        title="Edit"
+                                                    >
+                                                        <FiEdit className="h-5 w-5" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(timetable.id)}
+                                                        className="text-gray-500 hover:text-red-600 transition-colors p-2 rounded-full hover:bg-red-50"
+                                                        title="Delete"
+                                                    >
+                                                        <FiTrash2 className="h-5 w-5" />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
 
                                         {/* Group exams by date */}
                                         {Array.from(new Set(timetable.exams.map(exam => exam.date))).map(date => (
                                             <div key={date} className="border-b last:border-b-0">
-                                                <div className="px-6 py-3 bg-blue-50">
+                                                <div className="px-6 py-3 bg-gradient-to-r from-blue-50 to-blue-100">
                                                     <h3 className="font-medium text-blue-800 flex items-center">
-                                                        <FiCalendar className="mr-2" />
-                                                        {getDayName(date)} • {formatDate(date)}
+                                                        <FiCalendar className="mr-3 text-blue-600" />
+                                                        <span className="font-semibold">{getDayName(date)}</span>
+                                                        <span className="mx-2 text-blue-400">•</span>
+                                                        <span>{formatDate(date)}</span>
                                                     </h3>
                                                 </div>
 
                                                 <div className="overflow-x-auto">
                                                     <table className="w-full">
                                                         <thead>
-                                                            <tr className="text-left text-sm text-gray-600 border-b">
-                                                                <th className="px-6 py-3 font-medium">Course</th>
-                                                                <th className="px-6 py-3 font-medium">Time</th>
-                                                                <th className="px-6 py-3 font-medium">Venue</th>
-                                                                <th className="px-6 py-3 font-medium">Lecturer</th>
+                                                            <tr className="text-left text-sm text-gray-600 bg-gray-50">
+                                                                <th className="px-6 py-3 font-medium border-b border-gray-200">DATE/TIME</th>
+                                                                <th className="px-6 py-3 font-medium border-b border-gray-200">MORNING (9.00 A.M - 12.00 NOON)</th>
+                                                                <th className="px-6 py-3 font-medium border-b border-gray-200">AFTERNOON (2.00 P.M. - 5.00 P.M.)</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody className="divide-y divide-gray-100">
-                                                            {timetable.exams
-                                                                .filter(exam => exam.date === date)
-                                                                .map((exam, index) => (
-                                                                    <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                                                        <td className="px-6 py-4">
-                                                                            <div className="font-medium text-gray-900">
-                                                                                {exam.courseCode}
-                                                                            </div>
-                                                                            <div className="text-sm text-gray-500">
-                                                                                {exam.courseTitle}
-                                                                            </div>
-                                                                        </td>
-                                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                                            <div className="flex items-center">
-                                                                                <FiClock className="mr-2 text-gray-400" />
-                                                                                <span className="font-medium">
-                                                                                    {formatTime(exam.time)}
-                                                                                </span>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td className="px-6 py-4">
-                                                                            <div className="flex items-center">
-                                                                                <FiMapPin className="mr-2 text-gray-400" />
-                                                                                {exam.venue}
-                                                                            </div>
-                                                                        </td>
-                                                                        <td className="px-6 py-4">
-                                                                            <div className="flex items-center">
-                                                                                <FiUser className="mr-2 text-gray-400" />
-                                                                                {exam.invigilator || (
-                                                                                    <span className="text-gray-400">Not assigned</span>
-                                                                                )}
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                ))}
+                                                        <tbody>
+                                                            <tr className="hover:bg-gray-50 transition-colors">
+                                                                <td className="px-6 py-4 border-r border-gray-100 align-top">
+                                                                    <div className="font-medium text-gray-700">{getDayName(date)}</div>
+                                                                    <div className="text-sm text-gray-500 mt-1">{formatDate(date)}</div>
+                                                                </td>
+                                                                <td className="px-6 py-4 border-r border-gray-100 align-top">
+                                                                    <div className="grid gap-3">
+                                                                        {timetable.exams
+                                                                            .filter(exam => exam.date === date && exam.time.includes('Morning'))
+                                                                            .map((exam, index) => (
+                                                                                <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                                                                                    <div className="font-medium text-gray-800 flex items-center">
+                                                                                        <FiBook className="mr-2 text-blue-500 min-w-[20px]" />
+                                                                                        <span className="truncate">{exam.courseCode}</span>
+                                                                                    </div>
+                                                                                    <div className="flex items-center mt-2 text-sm text-gray-600">
+                                                                                        <FiMapPin className="mr-2 text-green-500 min-w-[20px]" />
+                                                                                        <span>{exam.venue}</span>
+                                                                                    </div>
+                                                                                    <div className="flex items-center mt-1 text-xs text-gray-500">
+                                                                                        <FiUsers className="mr-2 text-purple-500 min-w-[20px]" />
+                                                                                        <span>Students: {exam.studentCount || 'N/A'}</span>
+                                                                                    </div>
+                                                                                    <div className="flex items-center mt-1 text-xs text-gray-500">
+                                                                                        <FiUser className="mr-2 text-orange-500 min-w-[20px]" />
+                                                                                        <span>Lecturer: {exam.lecturer || 'Not assigned'}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))}
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-6 py-4 align-top">
+                                                                    <div className="grid gap-3">
+                                                                        {timetable.exams
+                                                                            .filter(exam => exam.date === date && exam.time.includes('Afternoon'))
+                                                                            .map((exam, index) => (
+                                                                                <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                                                                                    <div className="font-medium text-gray-800 flex items-center">
+                                                                                        <FiBook className="mr-2 text-blue-500 min-w-[20px]" />
+                                                                                        <span className="truncate">{exam.courseCode}</span>
+                                                                                    </div>
+                                                                                    <div className="flex items-center mt-2 text-sm text-gray-600">
+                                                                                        <FiMapPin className="mr-2 text-green-500 min-w-[20px]" />
+                                                                                        <span>{exam.venue}</span>
+                                                                                    </div>
+                                                                                    <div className="flex items-center mt-1 text-xs text-gray-500">
+                                                                                        <FiUsers className="mr-2 text-purple-500 min-w-[20px]" />
+                                                                                        <span>Students: {exam.studentCount || 'N/A'}</span>
+                                                                                    </div>
+                                                                                    <div className="flex items-center mt-1 text-xs text-gray-500">
+                                                                                        <FiUser className="mr-2 text-orange-500 min-w-[20px]" />
+                                                                                        <span>Lecturer: {exam.lecturer || 'Not assigned'}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
