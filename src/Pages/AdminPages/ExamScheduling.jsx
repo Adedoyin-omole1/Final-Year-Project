@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     FiCalendar, FiClock, FiUsers, FiBook,
     FiPlus, FiMinus, FiMonitor, FiEdit,
-    FiArrowRight, FiCheck
+    FiArrowRight, FiCheck, FiUser, FiX
 } from 'react-icons/fi';
 import { db } from '../../firebase';
 import { collection, addDoc } from 'firebase/firestore';
@@ -28,7 +28,8 @@ const ExamScheduling = () => {
     const [venue, setVenue] = useState('');
     const [examDate, setExamDate] = useState('');
     const [examTime, setExamTime] = useState('Morning');
-    const [invigilator, setInvigilator] = useState('');
+    const [invigilators, setInvigilators] = useState([]);
+    const [currentInvigilator, setCurrentInvigilator] = useState('');
     const [timetable, setTimetable] = useState([]);
     const [remainingSeats, setRemainingSeats] = useState(MAX_SEATS.WRITTEN);
 
@@ -63,9 +64,40 @@ const ExamScheduling = () => {
         toast.success("Course details saved! Now schedule the exam.");
     };
 
+    const handleAddInvigilator = () => {
+        if (!currentInvigilator.trim()) {
+            toast.error("Please enter an invigilator name");
+            return;
+        }
+
+        if (invigilators.length >= 20) {
+            toast.error("Maximum of 20 invigilators reached");
+            return;
+        }
+
+        if (invigilators.includes(currentInvigilator)) {
+            toast.error("This invigilator is already added");
+            return;
+        }
+
+        setInvigilators([...invigilators, currentInvigilator]);
+        setCurrentInvigilator('');
+    };
+
+    const handleRemoveInvigilator = (index) => {
+        const updatedInvigilators = [...invigilators];
+        updatedInvigilators.splice(index, 1);
+        setInvigilators(updatedInvigilators);
+    };
+
     const handleScheduleExam = () => {
         if (!examDate) {
             toast.error("Please select an exam date");
+            return;
+        }
+
+        if (invigilators.length === 0) {
+            toast.error("Please add at least one invigilator");
             return;
         }
 
@@ -90,12 +122,13 @@ const ExamScheduling = () => {
             date: examDate,
             time: examTime,
             type: examType,
-            invigilator,
+            invigilators,
             venue: examType === 'CBT' ? venue : 'NAS 1 - NAS 5'
         };
 
         setTimetable([...timetable, newExam]);
         setRemainingSeats(availableSeats - studentCount);
+        setInvigilators([]);
 
         setCourseCode('');
         setCourseTitle('');
@@ -331,14 +364,42 @@ const ExamScheduling = () => {
                                 </div>
 
                                 <div className="mb-6">
-                                    <label className="block text-sm font-medium mb-1">Invigilator</label>
-                                    <input
-                                        type="text"
-                                        className="w-full p-2 border rounded"
-                                        placeholder="Enter invigilator name"
-                                        value={invigilator}
-                                        onChange={(e) => setInvigilator(e.target.value)}
-                                    />
+                                    <label className="block text-sm font-medium mb-1">Invigilators ({invigilators.length}/20)</label>
+                                    <div className="flex mb-2">
+                                        <input
+                                            type="text"
+                                            className="flex-1 p-2 border rounded-l"
+                                            placeholder="Enter invigilator name"
+                                            value={currentInvigilator}
+                                            onChange={(e) => setCurrentInvigilator(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && handleAddInvigilator()}
+                                        />
+                                        <button
+                                            onClick={handleAddInvigilator}
+                                            className="bg-blue-600 text-white px-4 rounded-r hover:bg-blue-700"
+                                        >
+                                            <FiPlus />
+                                        </button>
+                                    </div>
+
+                                    {invigilators.length > 0 && (
+                                        <div className="border rounded p-2 max-h-40 overflow-y-auto">
+                                            {invigilators.map((invigilator, index) => (
+                                                <div key={index} className="flex items-center justify-between py-1 px-2 hover:bg-gray-50">
+                                                    <span className="flex items-center">
+                                                        <FiUser className="mr-2 text-gray-500" />
+                                                        {invigilator}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => handleRemoveInvigilator(index)}
+                                                        className="text-red-500 hover:text-red-700"
+                                                    >
+                                                        <FiX />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="flex justify-between">
@@ -390,7 +451,7 @@ const ExamScheduling = () => {
                                                     <th className="p-3 text-left">Type</th>
                                                     <th className="p-3 text-left">Students</th>
                                                     <th className="p-3 text-left">Venue</th>
-                                                    <th className="p-3 text-left">Invigilator</th>
+                                                    <th className="p-3 text-left">Invigilators</th>
                                                     <th className="p-3 text-left">Actions</th>
                                                 </tr>
                                             </thead>
@@ -411,7 +472,15 @@ const ExamScheduling = () => {
                                                         </td>
                                                         <td className="p-3">{exam.studentCount}</td>
                                                         <td className="p-3">{exam.venue}</td>
-                                                        <td className="p-3">{exam.invigilator}</td>
+                                                        <td className="p-3">
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {exam.invigilators.map((inv, i) => (
+                                                                    <span key={i} className="bg-gray-100 px-2 py-1 rounded text-sm flex items-center">
+                                                                        <FiUser className="mr-1" /> {inv}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </td>
                                                         <td className="p-3">
                                                             <button
                                                                 onClick={() => handleRemoveExam(index)}

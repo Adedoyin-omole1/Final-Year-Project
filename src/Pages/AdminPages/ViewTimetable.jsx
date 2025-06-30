@@ -219,6 +219,18 @@ const ViewTimetable = () => {
                                                                                         <FiUser className="mr-2 text-orange-500 min-w-[20px]" />
                                                                                         <span>Lecturer: {exam.lecturer || 'Not assigned'}</span>
                                                                                     </div>
+                                                                                    {exam.invigilators && exam.invigilators.length > 0 && (
+                                                                                        <div className="mt-2">
+                                                                                            <div className="text-xs font-medium text-gray-500 mb-1">Invigilators:</div>
+                                                                                            <div className="flex flex-wrap gap-1">
+                                                                                                {exam.invigilators.map((invigilator, i) => (
+                                                                                                    <span key={i} className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs">
+                                                                                                        {invigilator}
+                                                                                                    </span>
+                                                                                                ))}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    )}
                                                                                 </div>
                                                                             ))}
                                                                     </div>
@@ -243,8 +255,20 @@ const ViewTimetable = () => {
                                                                                     </div>
                                                                                     <div className="flex items-center mt-1 text-xs text-gray-500">
                                                                                         <FiUser className="mr-2 text-orange-500 min-w-[20px]" />
-                                                                                        <span>Lecturer: {exam.lecturer || 'Not assigned'}</span>
+                                                                                        <span>Lecturer: {exam.lecturer || 'Assigned'}</span>
                                                                                     </div>
+                                                                                    {exam.invigilators && exam.invigilators.length > 0 && (
+                                                                                        <div className="mt-2">
+                                                                                            <div className="text-xs font-medium text-gray-500 mb-1">Invigilators:</div>
+                                                                                            <div className="flex flex-wrap gap-1">
+                                                                                                {exam.invigilators.map((invigilator, i) => (
+                                                                                                    <span key={i} className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs">
+                                                                                                        {invigilator}
+                                                                                                    </span>
+                                                                                                ))}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    )}
                                                                                 </div>
                                                                             ))}
                                                                     </div>
