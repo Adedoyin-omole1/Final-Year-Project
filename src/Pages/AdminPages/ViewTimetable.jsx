@@ -217,7 +217,7 @@ const ViewTimetable = () => {
                                                                                     </div>
                                                                                     <div className="flex items-center mt-1 text-xs text-gray-500">
                                                                                         <FiUser className="mr-2 text-orange-500 min-w-[20px]" />
-                                                                                        <span>Lecturer: {exam.lecturer || 'Not assigned'}</span>
+                                                                                        <span>Lecturer: {exam.lecturer || 'Assigned'}</span>
                                                                                     </div>
                                                                                     {exam.invigilators && exam.invigilators.length > 0 && (
                                                                                         <div className="mt-2">
